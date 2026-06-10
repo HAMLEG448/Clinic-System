@@ -3,22 +3,10 @@ $pageTitle = "ผู้ป่วย";
 include "includes/header.php";
 include "includes/sidebar.php";
 
-$patients = [
-    [
-        "id" => 1,
-        "name" => "นายสมชาย ใจดี",
-        "phone" => "0812345678",
-        "gender" => "ชาย",
-        "allergy" => "แพ้ยา Penicillin"
-    ],
-    [
-        "id" => 2,
-        "name" => "นางสาวมาลี สดใส",
-        "phone" => "0899999999",
-        "gender" => "หญิง",
-        "allergy" => "ไม่มี"
-    ],
-];
+require_once "../backend/controllers/PatientController.php";
+
+$controller = new PatientController();
+$patients = $controller->index();
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -40,15 +28,15 @@ $patients = [
         </thead>
 
         <tbody>
-            <?php foreach ($patients as $patient): ?>
+                        <?php foreach ($patients as $patient): ?>
                 <tr>
-                    <td><?= $patient["id"] ?></td>
-                    <td><?= $patient["name"] ?></td>
-                    <td><?= $patient["gender"] ?></td>
-                    <td><?= $patient["phone"] ?></td>
-                    <td><?= $patient["allergy"] ?></td>
+                    <td><?= $patient["patient_id"] ?></td>
+                    <td><?= htmlspecialchars($patient["first_name"] . " " . $patient["last_name"]) ?></td>
+                    <td><?= htmlspecialchars($patient["gender"] ?? "-") ?></td>
+                    <td><?= htmlspecialchars($patient["phone"] ?? "-") ?></td>
+                    <td><?= htmlspecialchars($patient["allergy"] ?? "-") ?></td>
                     <td>
-                        <a href="visit-create.php?patient_id=<?= $patient["id"] ?>" class="btn btn-sm btn-success">
+                        <a href="visit-create.php?patient_id=<?= $patient["patient_id"] ?>" class="btn btn-sm btn-success">
                             รับเข้ารักษา
                         </a>
                     </td>

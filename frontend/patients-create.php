@@ -7,7 +7,7 @@ include "includes/sidebar.php";
 <h2 class="page-title">เพิ่มข้อมูลผู้ป่วย</h2>
 
 <div class="card card-box p-4">
-    <form action="#" method="post">
+    <<form action="../backend/routes/web.php?action=store_patient" method="post">>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>เลขบัตรประชาชน</label>

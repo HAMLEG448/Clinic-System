@@ -2,7 +2,15 @@
 $pageTitle = "รับคนไข้เข้ารักษา";
 include "includes/header.php";
 include "includes/sidebar.php";
+
+require_once "../backend/controllers/PatientController.php";
+
+$patientController = new PatientController();
+$patients = $patientController->index();
+
+$selected_patient_id = $_GET["patient_id"] ?? "";
 ?>
+
 
 <h2 class="page-title">รับคนไข้เข้ารักษา</h2>
 
