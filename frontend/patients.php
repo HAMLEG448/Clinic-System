@@ -11,7 +11,7 @@ $patients = $controller->index();
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="page-title">รายชื่อผู้ป่วย</h2>
-    <a href="patient-create.php" class="btn btn-primary">+ เพิ่มผู้ป่วย</a>
+    <a href="patients-create.php" class="btn btn-primary">+ เพิ่มผู้ป่วย</a>
 </div>
 
 <div class="card card-box p-4">

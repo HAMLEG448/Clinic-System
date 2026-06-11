@@ -1,4 +1,11 @@
-<?php $pageTitle = $pageTitle ?? "Clinic System";?>
+<?php 
+// วางโค้ดนี้ที่บรรทัดแรกสุดของ includes/header.php
+// (ก่อน DOCTYPE หรือก่อน include อื่นใด)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+    $pageTitle = $pageTitle ?? "Clinic System";
+?>
 
 <!DOCTYPE html>
 <html lang="th">
