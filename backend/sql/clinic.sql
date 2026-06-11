@@ -8,7 +8,7 @@ CREATE TABLE patients (
     patient_id INT AUTO_INCREMENT PRIMARY KEY,
     citizen_id VARCHAR(13) UNIQUE,
     first_name VARCHAR(100) NOT NULL UNIQUE,
-    last_name VARCHAR(100) NOT NULL UNIQUE,
+    last_name VARCHAR(100) NOT NULL,
     gender ENUM('male', 'female', 'other'),
     birth_date DATE,
     phone VARCHAR(20) NOT NULL UNIQUE,

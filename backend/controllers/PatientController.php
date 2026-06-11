@@ -48,16 +48,12 @@ class PatientController
 
         if ($first_name === "") {
             $errors["first_name"] = "กรุณากรอกชื่อ";
+        } elseif ($this->patientModel->existsByFirstName($first_name)) {
+            $errors["first_name"] = "กรอกชื่อซ้ำไม่ได้";
         }
 
         if ($last_name === "") {
             $errors["last_name"] = "กรุณากรอกนามสกุล";
-        }
-
-        if ($first_name !== "" && $last_name !== "") {
-            if ($this->patientModel->existsByFullName($first_name, $last_name)) {
-                $errors["full_name"] = "กรอกชื่อและนามสกุลซ้ำไม่ได้";
-            }
         }
 
         if ($phone === "") {

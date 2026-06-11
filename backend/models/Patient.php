@@ -41,19 +41,12 @@ class Patient
 
         return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
     }
-
-    public function existsByFullName(string $first_name, string $last_name): bool
+    public function existsByFirstName(string $first_name): bool
     {
-        $sql = "SELECT patient_id
-                FROM patients
-                WHERE first_name = :first_name
-                AND last_name = :last_name
-                LIMIT 1";
-
+        $sql = "SELECT patient_id FROM patients WHERE first_name = :first_name LIMIT 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
-            ":first_name" => $first_name,
-            ":last_name" => $last_name
+            ":first_name" => $first_name
         ]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
