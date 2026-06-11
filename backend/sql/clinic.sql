@@ -6,12 +6,12 @@ USE clinic_db;
 
 CREATE TABLE patients (
     patient_id INT AUTO_INCREMENT PRIMARY KEY,
-    citizen_id VARCHAR(13),
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
+    citizen_id VARCHAR(13) UNIQUE,
+    first_name VARCHAR(100) NOT NULL UNIQUE,
+    last_name VARCHAR(100) NOT NULL UNIQUE,
     gender ENUM('male', 'female', 'other'),
     birth_date DATE,
-    phone VARCHAR(20),
+    phone VARCHAR(20) NOT NULL UNIQUE,
     address TEXT,
     allergy TEXT,
     underlying_disease TEXT,
@@ -45,7 +45,7 @@ CREATE TABLE medical_records (
 
 CREATE TABLE medicines (
     medicine_id INT AUTO_INCREMENT PRIMARY KEY,
-    medicine_name VARCHAR(150) NOT NULL,
+    medicine_name VARCHAR(150) NOT NULL UNIQUE,
     medicine_type VARCHAR(50),
     unit VARCHAR(50),
     stock_qty INT DEFAULT 0,

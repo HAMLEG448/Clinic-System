@@ -20,6 +20,45 @@ class Patient
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function existsByCitizenId(string $citizen_id): bool
+    {
+        $sql = "SELECT patient_id FROM patients WHERE citizen_id = :citizen_id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ":citizen_id" => $citizen_id
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+    }
+
+    public function existsByPhone(string $phone): bool
+    {
+        $sql = "SELECT patient_id FROM patients WHERE phone = :phone LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ":phone" => $phone
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+    }
+
+    public function existsByFullName(string $first_name, string $last_name): bool
+    {
+        $sql = "SELECT patient_id
+                FROM patients
+                WHERE first_name = :first_name
+                AND last_name = :last_name
+                LIMIT 1";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ":first_name" => $first_name,
+            ":last_name" => $last_name
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+    }
+
     public function create(PatientEntity $patient)
     {
         $sql = "INSERT INTO patients
