@@ -9,7 +9,7 @@ require_once "../backend/config/database.php";
 $totalPatients = $conn->query("SELECT COUNT(*) FROM patients")->fetchColumn();
 $todayVisits   = $conn->query("SELECT COUNT(*) FROM visits WHERE DATE(visit_date) = CURDATE()")->fetchColumn();
 $unpaidCount   = $conn->query("SELECT COUNT(*) FROM payments WHERE payment_status = 'unpaid'")->fetchColumn();
-$lowStockCount = $conn->query("SELECT COUNT(*) FROM medicines WHERE stock_qty <= 30 AND status = 'active'")->fetchColumn();
+$lowStockCount = $conn->query("SELECT COUNT(*) FROM medicines WHERE status = 'active'")->fetchColumn();
 
 // รายการรอตรวจวันนี้
 $waitingVisits = $conn->query(
