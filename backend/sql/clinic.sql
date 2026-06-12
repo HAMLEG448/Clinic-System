@@ -6,8 +6,8 @@ USE clinic_db;
 
 CREATE TABLE patients (
     patient_id INT AUTO_INCREMENT PRIMARY KEY,
-    citizen_id VARCHAR(13) UNIQUE,
-    first_name VARCHAR(100) NOT NULL UNIQUE,
+    citizen_id VARCHAR(13) NOT NULL UNIQUE,
+    first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     gender ENUM('male', 'female', 'other'),
     birth_date DATE,
@@ -15,7 +15,9 @@ CREATE TABLE patients (
     address TEXT,
     allergy TEXT,
     underlying_disease TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uq_patients_full_name (first_name, last_name)
 );
 
 CREATE TABLE visits (
