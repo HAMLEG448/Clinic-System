@@ -20,6 +20,10 @@ switch ($action) {
         (new VisitController())->store();
         break;
 
+    case "start_queue":
+        (new VisitController())->startQueue();
+        break;
+
     // ── บันทึกการตรวจรักษา ───────────────────
     case "store_medical_record":
         (new MedicalRecordController())->store();

@@ -37,7 +37,14 @@ class Visit
 
     public function findById($id)
     {
-        $sql = "SELECT visits.*, patients.first_name, patients.last_name
+        $sql = "SELECT 
+                    visits.*, 
+                    patients.first_name, 
+                    patients.last_name,
+                    patients.gender,
+                    patients.birth_date,
+                    patients.allergy,
+                    TIMESTAMPDIFF(YEAR, patients.birth_date, CURDATE()) AS age
                 FROM visits
                 INNER JOIN patients ON visits.patient_id = patients.patient_id
                 WHERE visits.visit_id = :id";
@@ -50,7 +57,10 @@ class Visit
 
     public function updateStatus($visit_id, $status)
     {
-        $sql = "UPDATE visits SET status = :status WHERE visit_id = :visit_id";
+        $sql = "UPDATE visits 
+                SET status = :status 
+                WHERE visit_id = :visit_id";
+
         $stmt = $this->conn->prepare($sql);
 
         return $stmt->execute([
@@ -61,19 +71,40 @@ class Visit
 
     public function hasActiveVisitByPatientId(int $patient_id): bool
     {
-    $sql = "SELECT visit_id
-            FROM visits
-            WHERE patient_id = :patient_id
-            AND status IN ('waiting', 'examining')
-            LIMIT 1";
+        $sql = "SELECT visit_id
+                FROM visits
+                WHERE patient_id = :patient_id
+                AND status IN ('waiting', 'examining')
+                LIMIT 1";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute([
-        ":patient_id" => $patient_id
-    ]);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ":patient_id" => $patient_id
+        ]);
 
-    return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+        return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
     }
 
-    
+    public function getByStatus(string $status): array
+    {
+        $sql = "SELECT 
+                    visits.*,
+                    patients.first_name,
+                    patients.last_name,
+                    patients.gender,
+                    patients.birth_date,
+                    patients.allergy,
+                    TIMESTAMPDIFF(YEAR, patients.birth_date, CURDATE()) AS age
+                FROM visits
+                INNER JOIN patients ON visits.patient_id = patients.patient_id
+                WHERE visits.status = :status
+                ORDER BY visits.visit_date ASC, visits.visit_id ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            ":status" => $status
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
