@@ -54,35 +54,33 @@ class Medicine
 
     public function update(MedicineEntity $medicine): bool
     {
-    // ถ้าแก้จำนวนยาให้เหลือ 0 หรือน้อยกว่า 0
-    // ให้เปลี่ยนสถานะยาเป็น inactive อัตโนมัติ
-    if ($medicine->stock_qty <= 0) {
-        $medicine->stock_qty = 0;
-        $medicine->status = "inactive";
-    }
+        if ($medicine->stock_qty <= 0) {
+            $medicine->stock_qty = 0;
+            $medicine->status = "inactive";
+        }
 
-    $sql = "UPDATE medicines SET
-                medicine_name = :medicine_name,
-                medicine_type = :medicine_type,
-                unit          = :unit,
-                stock_qty     = :stock_qty,
-                price         = :price,
-                expiry_date   = :expiry_date,
-                status        = :status
-            WHERE medicine_id = :medicine_id";
+        $sql = "UPDATE medicines SET
+                    medicine_name = :medicine_name,
+                    medicine_type = :medicine_type,
+                    unit          = :unit,
+                    stock_qty     = :stock_qty,
+                    price         = :price,
+                    expiry_date   = :expiry_date,
+                    status        = :status
+                WHERE medicine_id = :medicine_id";
 
-    $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
-    return $stmt->execute([
-        ":medicine_name" => $medicine->medicine_name,
-        ":medicine_type" => $medicine->medicine_type,
-        ":unit"          => $medicine->unit,
-        ":stock_qty"     => $medicine->stock_qty,
-        ":price"         => $medicine->price,
-        ":expiry_date"   => $medicine->expiry_date,
-        ":status"        => $medicine->status,
-        ":medicine_id"   => $medicine->medicine_id,
-    ]);
+        return $stmt->execute([
+            ":medicine_name" => $medicine->medicine_name,
+            ":medicine_type" => $medicine->medicine_type,
+            ":unit"          => $medicine->unit,
+            ":stock_qty"     => $medicine->stock_qty,
+            ":price"         => $medicine->price,
+            ":expiry_date"   => $medicine->expiry_date,
+            ":status"        => $medicine->status,
+            ":medicine_id"   => $medicine->medicine_id,
+        ]);
     }
 
     public function delete(int $id): bool
@@ -93,31 +91,49 @@ class Medicine
 
     public function reduceStock(int $medicine_id, int $qty): bool
     {
-    // ถ้าจำนวนยาที่จะตัดไม่ถูกต้อง ไม่ต้องทำงานต่อ
-    if ($qty <= 0) {
-        return false;
-    }
+        if ($qty <= 0) {
+            return false;
+        }
 
-    // ลดจำนวนยาใน stock
-    // ถ้าหลังจากลดแล้วเหลือ 0 ให้ปิดการใช้งานยาอัตโนมัติ
-    $sql = "UPDATE medicines
-            SET 
-                stock_qty = stock_qty - :qty,
-                status = CASE
-                    WHEN stock_qty - :qty <= 0 THEN 'inactive'
-                    ELSE status
-                END
-            WHERE medicine_id = :id
-            AND stock_qty >= :qty
-            AND status = 'active'";
+        try {
+            $this->conn->beginTransaction();
 
-    $stmt = $this->conn->prepare($sql);
+            // ลดจำนวนยาอย่างเดียวก่อน ห้ามเปลี่ยน status ตรงนี้
+            $sql = "UPDATE medicines
+                    SET stock_qty = stock_qty - :qty
+                    WHERE medicine_id = :id
+                    AND stock_qty >= :qty
+                    AND status = 'active'";
 
-    $stmt->execute([
-        ":qty" => $qty,
-        ":id"  => $medicine_id
-    ]);
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                ":qty" => $qty,
+                ":id"  => $medicine_id
+            ]);
 
-    return $stmt->rowCount() > 0;
+            if ($stmt->rowCount() === 0) {
+                $this->conn->rollBack();
+                return false;
+            }
+
+            // ปิดใช้งานเฉพาะตอน stock เหลือ 0 จริง ๆ เท่านั้น
+            $closeStmt = $this->conn->prepare(
+                "UPDATE medicines
+                 SET status = 'inactive'
+                 WHERE medicine_id = :id
+                 AND stock_qty = 0
+                 AND status = 'active'"
+            );
+            $closeStmt->execute([":id" => $medicine_id]);
+
+            $this->conn->commit();
+            return true;
+        } catch (Throwable $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+
+            return false;
+        }
     }
 }
