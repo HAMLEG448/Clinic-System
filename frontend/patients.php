@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "ทะบียน";
+$pageTitle = "ทะเบียน";
 include "includes/header.php";
 include "includes/sidebar.php";
 
@@ -18,23 +18,25 @@ $patients = $controller->index();
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>รหัส</th>
+                <th>#</th>
                 <th>ชื่อ-นามสกุล</th>
-                <th>เพศ</th>
+                <th>เลขบัตรประชาชน</th>
                 <th>เบอร์โทร</th>
-                <th>ประวัติแพ้ยา</th>
+                <th>แพ้ยา</th>
+                <th>วันที่ลงทะเบียน</th>
                 <th>จัดการ</th>
             </tr>
         </thead>
 
         <tbody>
-                        <?php foreach ($patients as $patient): ?>
+            <?php foreach ($patients as $index => $patient): ?>
                 <tr>
-                    <td><?= $patient["patient_id"] ?></td>
+                    <td><?= $index + 1 ?></td>
                     <td><?= htmlspecialchars($patient["first_name"] . " " . $patient["last_name"]) ?></td>
-                    <td><?= htmlspecialchars($patient["gender"] ?? "-") ?></td>
-                    <td><?= htmlspecialchars($patient["phone"] ?? "-") ?></td>
-                    <td><?= htmlspecialchars($patient["allergy"] ?? "-") ?></td>
+                    <td><?= htmlspecialchars($patient["citizen_id"]) ?></td>
+                    <td><?= htmlspecialchars($patient["phone"]) ?></td>
+                    <td><?= $patient["allergy"] ? htmlspecialchars($patient["allergy"]) : "-" ?></td>
+                    <td><?= htmlspecialchars($patient["created_at"]) ?></td>
                     <td>
                         <a href="visit-create.php?patient_id=<?= $patient["patient_id"] ?>" class="btn btn-sm btn-success">
                             รับเข้ารักษา
