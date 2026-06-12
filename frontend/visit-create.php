@@ -85,7 +85,7 @@ $selected_patient_id = (int) ($_GET["patient_id"] ?? 0);
         </div>
 
         <div class="row">
-            <div class="col-md-2 mb-3">
+            <div class="col-md-3 mb-3">
                 <label class="form-label">อายุผู้ป่วย</label>
 
                 <input
@@ -97,7 +97,7 @@ $selected_patient_id = (int) ($_GET["patient_id"] ?? 0);
                 >
             </div>
 
-            <div class="col-md-2 mb-3">
+            <div class="col-md-3 mb-3">
                 <label class="form-label">อุณหภูมิ (°C)</label>
 
                 <input
@@ -122,7 +122,7 @@ $selected_patient_id = (int) ($_GET["patient_id"] ?? 0);
                 >
             </div>
 
-            <div class="col-md-2 mb-3">
+            <div class="col-md-3 mb-3">
                 <label class="form-label">น้ำหนัก (kg)</label>
 
                 <input
@@ -134,19 +134,10 @@ $selected_patient_id = (int) ($_GET["patient_id"] ?? 0);
                     min="1"
                 >
             </div>
-
-            <div class="col-md-3 mb-3">
-                <label class="form-label">สถานะเริ่มต้น</label>
-
-                <select name="status" class="form-select">
-                    <option value="waiting">รอตรวจ</option>
-                    <option value="examining">กำลังตรวจ</option>
-                </select>
-            </div>
         </div>
 
         <button class="btn btn-success" <?= empty($patients) ? "disabled" : "" ?>>
-            ส่งเข้าห้องตรวจ →
+            ส่งเข้าคิวตรวจ →
         </button>
 
         <a href="patients.php" class="btn btn-secondary ms-2">ย้อนกลับ</a>
