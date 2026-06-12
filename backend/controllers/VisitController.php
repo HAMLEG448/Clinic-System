@@ -37,15 +37,45 @@ class VisitController
             exit;
         }
 
-        $visit = new VisitEntity($_POST);
-        $visit_id = $this->visitModel->create($visit);
+        $_POST["status"] = "waiting";
 
-        header("Location: ../../frontend/medical-record.php?visit_id=" . $visit_id);
+        $visit = new VisitEntity($_POST);
+        $this->visitModel->create($visit);
+
+        header("Location: ../../frontend/queue.php");
         exit;
     }
 
     public function show($visit_id)
     {
         return $this->visitModel->findById($visit_id);
+    }
+
+    public function queue(): array
+    {
+        return [
+            "waiting" => $this->visitModel->getByStatus("waiting"),
+            "examining" => $this->visitModel->getByStatus("examining")
+        ];
+    }
+
+    public function startQueue(): void
+    {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            header("Location: ../../frontend/queue.php");
+            exit;
+        }
+
+        $visit_id = (int) ($_POST["visit_id"] ?? 0);
+
+        if (!$visit_id) {
+            header("Location: ../../frontend/queue.php");
+            exit;
+        }
+
+        $this->visitModel->updateStatus($visit_id, "examining");
+
+        header("Location: ../../frontend/medical-record.php?visit_id=" . $visit_id);
+        exit;
     }
 }
