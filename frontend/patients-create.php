@@ -80,23 +80,41 @@ include "includes/sidebar.php";
             </div>
 
             <div class="col-md-3 mb-3">
-                <label>เพศ</label>
-                <select name="gender" class="form-select">
+                <label>เพศ <span class="text-danger">*</span></label>
+                <select
+                    name="gender"
+                    class="form-select <?= isset($errors["gender"]) ? "is-invalid" : "" ?>"
+                    required
+                >
                     <option value="">เลือกเพศ</option>
                     <option value="male" <?= ($old["gender"] ?? "") === "male" ? "selected" : "" ?>>ชาย</option>
                     <option value="female" <?= ($old["gender"] ?? "") === "female" ? "selected" : "" ?>>หญิง</option>
                     <option value="other" <?= ($old["gender"] ?? "") === "other" ? "selected" : "" ?>>อื่น ๆ</option>
                 </select>
+
+    <?php if (isset($errors["gender"])): ?>
+        <div class="invalid-feedback">
+            <?= htmlspecialchars($errors["gender"], ENT_QUOTES, "UTF-8") ?>
+        </div>
+    <?php endif; ?>
             </div>
 
             <div class="col-md-3 mb-3">
-                <label>วันเกิด</label>
+                <label>วันเกิด <span class="text-danger">*</span></label>
+
                 <input
                     type="date"
                     name="birth_date"
-                    class="form-control"
+                    class="form-control <?= isset($errors["birth_date"]) ? "is-invalid" : "" ?>"
                     value="<?= htmlspecialchars($old["birth_date"] ?? "", ENT_QUOTES, "UTF-8") ?>"
+                    required
                 >
+
+                <?php if (isset($errors["birth_date"])): ?>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($errors["birth_date"], ENT_QUOTES, "UTF-8") ?>
+                    </div>
+    <?php endif; ?>
             </div>
 
             <div class="col-md-6 mb-3">
