@@ -62,9 +62,9 @@ class Patient
     public function create(PatientEntity $patient)
     {
         $sql = "INSERT INTO patients
-                (citizen_id, first_name, last_name, gender, birth_date, phone, address, allergy, underlying_disease)
+                (citizen_id, first_name, last_name, gender, birth_date, age, phone, address, allergy, underlying_disease)
                 VALUES
-                (:citizen_id, :first_name, :last_name, :gender, :birth_date, :phone, :address, :allergy, :underlying_disease)";
+                (:citizen_id, :first_name, :last_name, :gender, :birth_date, :age, :phone, :address, :allergy, :underlying_disease)";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -74,6 +74,7 @@ class Patient
             ":last_name" => $patient->last_name,
             ":gender" => $patient->gender,
             ":birth_date" => $patient->birth_date ?: null,
+            ":age" => $patient->age,
             ":phone" => $patient->phone,
             ":address" => $patient->address,
             ":allergy" => $patient->allergy,
