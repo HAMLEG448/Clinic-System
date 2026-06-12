@@ -28,6 +28,16 @@ CREATE TABLE visits (
     temperature DECIMAL(4,1),
     weight DECIMAL(5,2),
     status ENUM('waiting', 'examining', 'completed', 'cancelled') DEFAULT 'waiting',
+
+    active_patient_id INT GENERATED ALWAYS AS (
+        CASE
+            WHEN status IN ('waiting', 'examining') THEN patient_id
+            ELSE NULL
+        END
+    ) STORED,
+
+    UNIQUE KEY uq_active_visit_patient (active_patient_id),
+
     FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
 );
 

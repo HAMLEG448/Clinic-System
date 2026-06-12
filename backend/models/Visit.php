@@ -58,4 +58,22 @@ class Visit
             ":status" => $status
         ]);
     }
+
+    public function hasActiveVisitByPatientId(int $patient_id): bool
+    {
+    $sql = "SELECT visit_id
+            FROM visits
+            WHERE patient_id = :patient_id
+            AND status IN ('waiting', 'examining')
+            LIMIT 1";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute([
+        ":patient_id" => $patient_id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+    }
+
+    
 }

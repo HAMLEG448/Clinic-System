@@ -73,4 +73,18 @@ class Patient
             ":underlying_disease" => $patient->underlying_disease
         ]);
     }
+    public function getAvailableForVisit(): array
+    {
+        $sql = "SELECT p.*
+                FROM patients p
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM visits v
+                    WHERE v.patient_id = p.patient_id
+                    AND v.status IN ('waiting', 'examining')
+                )
+                ORDER BY p.first_name ASC";
+
+        return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

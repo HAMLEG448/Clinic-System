@@ -79,4 +79,8 @@ class PatientController
         header("Location: ../../frontend/patients.php");
         exit;
     }
+    public function availableForVisit(): array
+    {
+        return $this->patientModel->getAvailableForVisit();
+    }
 }

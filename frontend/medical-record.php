@@ -124,16 +124,21 @@ if (!$visit) {
                         <select name="medicine_id[]" class="form-select">
                             <option value="">-- เลือกยา --</option>
                             <?php foreach ($medicines as $med): ?>
-                                <option value="<?= $med["medicine_id"] ?>">
+                                <option value="<?= $med["medicine_id"] ?>" data-stock="<?= $med["stock_qty"] ?>">
                                     <?= htmlspecialchars($med["medicine_name"]) ?>
-                                    (<?= htmlspecialchars($med["unit"]) ?> | <?= $med["price"] ?> บาท)
+                                    (คงเหลือ <?= $med["stock_qty"] ?> <?= htmlspecialchars($med["unit"]) ?> | <?= $med["price"] ?> บาท)
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <input type="number" name="quantity[]" class="form-control"
-                            placeholder="จำนวน" min="1">
+                        <input 
+                            type="number" 
+                            name="quantity[]" 
+                            class="form-control medicine-qty"
+                            placeholder="จำนวน" 
+                            min="1"
+                        >
                     </div>
                     <div class="col-md-3">
                         <input type="text" name="dosage[]" class="form-control"
@@ -170,14 +175,71 @@ if (!$visit) {
 <?php endif; ?>
 
 <script>
+function updateQuantityLimit(row) {
+    const select = row.querySelector("select[name='medicine_id[]']");
+    const qtyInput = row.querySelector("input[name='quantity[]']");
+    const selectedOption = select.options[select.selectedIndex];
+
+    const stock = parseInt(selectedOption.dataset.stock || "0");
+
+    if (stock > 0) {
+        qtyInput.max = stock;
+        qtyInput.placeholder = "สูงสุด " + stock;
+
+        if (parseInt(qtyInput.value || "0") > stock) {
+            qtyInput.value = stock;
+        }
+    } else {
+        qtyInput.removeAttribute("max");
+        qtyInput.placeholder = "จำนวน";
+        qtyInput.value = "";
+    }
+}
+
+function bindMedicineRow(row) {
+    const select = row.querySelector("select[name='medicine_id[]']");
+    const qtyInput = row.querySelector("input[name='quantity[]']");
+
+    select.addEventListener("change", function () {
+        updateQuantityLimit(row);
+    });
+
+    qtyInput.addEventListener("input", function () {
+        const max = parseInt(qtyInput.max || "0");
+        const value = parseInt(qtyInput.value || "0");
+
+        if (max > 0 && value > max) {
+            qtyInput.value = max;
+            alert("จำนวนยาที่เลือกห้ามเกินจำนวนคงเหลือในสต็อก");
+        }
+
+        if (value < 1 && qtyInput.value !== "") {
+            qtyInput.value = 1;
+        }
+    });
+}
+
 function addMedicineRow() {
     const container = document.getElementById("medicine-rows");
     const first = container.querySelector(".medicine-row");
     const clone = first.cloneNode(true);
-    clone.querySelectorAll("input").forEach(i => i.value = "");
-    clone.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+
+    clone.querySelectorAll("input").forEach(i => {
+        i.value = "";
+        i.removeAttribute("max");
+    });
+
+    clone.querySelectorAll("select").forEach(s => {
+        s.selectedIndex = 0;
+    });
+
     container.appendChild(clone);
+    bindMedicineRow(clone);
 }
+
+document.querySelectorAll(".medicine-row").forEach(row => {
+    bindMedicineRow(row);
+});
 </script>
 
 <?php include "includes/footer.php"; ?>
