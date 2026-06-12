@@ -4,7 +4,7 @@
     <a href="index.php">Dashboard</a>
     <a href="patients.php">ทะเบียน</a>
     <a href="visit-create.php">รับคนไข้เข้ารักษา</a>
-    <a href="medical-record.php">บันทึกการตรวจ</a>
+    <a href="queue.php">คิวตรวจ</a>
     <a href="medicines.php">ยา</a>
     <a href="payment.php">ชำระเงิน</a>
 </div>
