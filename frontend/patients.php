@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "ผู้ป่วย";
+$pageTitle = "ทะบียน";
 include "includes/header.php";
 include "includes/sidebar.php";
 
@@ -10,7 +10,7 @@ $patients = $controller->index();
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="page-title">รายชื่อผู้ป่วย</h2>
+    <h2 class="page-title">รายชื่อ/ประวัติผู้ป่วยที่ลงทะเบียน</h2>
     <a href="patients-create.php" class="btn btn-primary">+ เพิ่มผู้ป่วย</a>
 </div>
 
