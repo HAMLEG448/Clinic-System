@@ -1,4 +1,13 @@
 <?php
+require_once "../backend/controllers/PatientController.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$visit_error = $_SESSION["visit_error"] ?? "";
+unset($_SESSION["visit_error"]);
+
 $pageTitle = "รับคนไข้เข้ารักษา";
 include "includes/header.php";
 include "includes/sidebar.php";
@@ -6,12 +15,24 @@ include "includes/sidebar.php";
 require_once "../backend/controllers/PatientController.php";
 
 $patientController = new PatientController();
-$patients          = $patientController->index();
+$patients = $patientController->availableForVisit();
 
 $selected_patient_id = (int) ($_GET["patient_id"] ?? 0);
 ?>
 
 <h2 class="page-title">รับคนไข้เข้ารักษา</h2>
+
+<?php if ($visit_error): ?>
+    <div class="alert alert-danger">
+        <?= htmlspecialchars($visit_error, ENT_QUOTES, "UTF-8") ?>
+    </div>
+<?php endif; ?>
+
+<?php if (empty($patients)): ?>
+    <div class="alert alert-warning">
+        ตอนนี้ไม่มีผู้ป่วยที่สามารถรับเข้ารักษาได้ เพราะผู้ป่วยทั้งหมดกำลังรอตรวจหรือกำลังตรวจอยู่
+    </div>
+<?php endif; ?>
 
 <div class="card card-box p-4">
     <form action="../backend/routes/web.php?action=store_visit" method="post">
@@ -69,7 +90,7 @@ $selected_patient_id = (int) ($_GET["patient_id"] ?? 0);
             </div>
         </div>
 
-        <button class="btn btn-success">ส่งเข้าห้องตรวจ →</button>
+        <button class="btn btn-success" <?= empty($patients) ? "disabled" : "" ?>>ส่งเข้าห้องตรวจ →</button>
         <a href="patients.php" class="btn btn-secondary ms-2">ย้อนกลับ</a>
     </form>
 </div>

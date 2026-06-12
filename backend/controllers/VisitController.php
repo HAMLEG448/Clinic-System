@@ -19,8 +19,22 @@ class VisitController
             exit;
         }
 
-        if (empty($_POST["patient_id"])) {
-            die("ไม่พบข้อมูลผู้ป่วย");
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $patient_id = (int) ($_POST["patient_id"] ?? 0);
+
+        if (!$patient_id) {
+            $_SESSION["visit_error"] = "กรุณาเลือกผู้ป่วย";
+            header("Location: ../../frontend/visit-create.php");
+            exit;
+        }
+
+        if ($this->visitModel->hasActiveVisitByPatientId($patient_id)) {
+            $_SESSION["visit_error"] = "ผู้ป่วยคนนี้มีรายการรอตรวจหรือกำลังตรวจอยู่แล้ว";
+            header("Location: ../../frontend/visit-create.php");
+            exit;
         }
 
         $visit = new VisitEntity($_POST);

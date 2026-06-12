@@ -108,7 +108,11 @@ class PaymentController
             $mid = (int) $mid;
             $qty = (int) ($quantities[$idx] ?? 0);
             if ($mid && $qty) {
-                $this->medicineModel->reduceStock($mid, $qty);
+                $success = $this->medicineModel->reduceStock($mid, $qty);
+
+                if (!$success) {
+                    die("จำนวนยาไม่พอในสต็อก หรือยาถูกปิดใช้งานแล้ว");
+                }
             }
         }
 
