@@ -11,6 +11,7 @@ CREATE TABLE patients (
     last_name VARCHAR(100) NOT NULL,
     gender ENUM('male', 'female', 'other'),
     birth_date DATE,
+    age INT,
     phone VARCHAR(20) NOT NULL UNIQUE,
     address TEXT,
     allergy TEXT,
